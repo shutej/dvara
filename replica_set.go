@@ -1,6 +1,8 @@
 package dvara
 
 import (
+	"crypto/rand"
+	"crypto/tls"
 	"errors"
 	"flag"
 	"fmt"
@@ -91,6 +93,14 @@ type ReplicaSet struct {
 	// proxied.
 	MessageTimeout time.Duration
 
+	// CertFile points to the SSL .cert file.  If it is not the empty string,
+	// KeyFile must also not be the empty string.
+	CertFile string
+
+	// KeyFile points to the SSL .key file.  If it is not the empty string,
+	// CertFile must also not be the empty string.
+	KeyFile string
+
 	ClientsConnected metrics.Counter
 
 	proxyToReal map[string]string
@@ -111,6 +121,29 @@ func (r *ReplicaSet) RegisterMetrics(registry *gangliamr.Registry) {
 		Groups: gangliaGroup,
 	}
 	registry.Register(r.ClientsConnected)
+}
+
+func (r *ReplicaSet) maybeWrapListener(listener net.Listener) (net.Listener, error) {
+	if r.CertFile != "" || r.KeyFile != "" {
+		if r.CertFile == "" {
+			return nil, fmt.Errorf("Must specify --cert_file when --key_file is specified.")
+		}
+		if r.KeyFile == "" {
+			return nil, fmt.Errorf("Must specify --key_file when --cert_file is specified.")
+		}
+
+		cert, err := tls.LoadX509KeyPair(r.CertFile, r.KeyFile)
+		if err != nil {
+			return nil, err
+		}
+		config := tls.Config{
+			Certificates: []tls.Certificate{cert},
+			Rand:         rand.Reader,
+		}
+		listener = tls.NewListener(listener, &config)
+	}
+
+	return listener, nil
 }
 
 // Start starts proxies to support this ReplicaSet.
@@ -287,7 +320,7 @@ func (r *ReplicaSet) proxyHostname() string {
 	return home
 }
 
-func (r *ReplicaSet) newListener() (net.Listener, error) {
+func (r *ReplicaSet) newBareListener() (net.Listener, error) {
 	for i := r.PortStart; i <= r.PortEnd; i++ {
 		listener, err := net.Listen("tcp", fmt.Sprintf(":%d", i))
 		if err == nil {
@@ -299,6 +332,14 @@ func (r *ReplicaSet) newListener() (net.Listener, error) {
 		r.PortStart,
 		r.PortEnd,
 	)
+}
+
+func (r *ReplicaSet) newListener() (net.Listener, error) {
+	if l, err := r.newBareListener(); err != nil {
+		return nil, err
+	} else {
+		return r.maybeWrapListener(l)
+	}
 }
 
 // add a proxy/mongo mapping.

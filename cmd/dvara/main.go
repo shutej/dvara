@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/facebookgo/dvara"
+	"github.com/shutej/dvara"
 	"github.com/facebookgo/gangliamr"
 	"github.com/facebookgo/inject"
 	"github.com/facebookgo/startstop"
@@ -30,6 +30,9 @@ func Main() error {
 	portEnd := flag.Int("port_end", 6010, "end of port range")
 	addrs := flag.String("addrs", "localhost:27017", "comma separated list of mongo addresses")
 
+	certFile := flag.String("cert_file", "", "path to the certificate file")
+	keyFile := flag.String("key_file", "", "path to the key file")
+
 	flag.Parse()
 
 	replicaSet := dvara.ReplicaSet{
@@ -40,6 +43,8 @@ func Main() error {
 		ClientIdleTimeout:   *clientIdleTimeout,
 		GetLastErrorTimeout: *getLastErrorTimeout,
 		MaxConnections:      *maxConnections,
+		CertFile:            *certFile,
+		KeyFile:             *keyFile,
 	}
 
 	var log stdLogger
