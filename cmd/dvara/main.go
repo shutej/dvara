@@ -8,10 +8,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/shutej/dvara"
 	"github.com/facebookgo/gangliamr"
 	"github.com/facebookgo/inject"
 	"github.com/facebookgo/startstop"
+	"github.com/facebookgo/stats"
+	"github.com/shutej/dvara"
 )
 
 func main() {
@@ -26,6 +27,9 @@ func Main() error {
 	clientIdleTimeout := flag.Duration("client_idle_timeout", 60*time.Minute, "idle timeout for client connections")
 	getLastErrorTimeout := flag.Duration("get_last_error_timeout", time.Minute, "timeout for getLastError pinning")
 	maxConnections := flag.Uint("max_connections", 100, "maximum number of connections per mongo")
+	maxPerClientConnections := flag.Uint("max_per_client_connections", 1, "maximum number of connections from a single client")
+	serverClosePoolSize := flag.Uint("server_close_pool_size", 1, "number of goroutines that will handle closing server connections.")
+	serverIdleTimeout := flag.Duration("server_idle_timeout", 60*time.Minute, "duration after which a server connection will be considered idle")
 	portStart := flag.Int("port_start", 6000, "start of port range")
 	portEnd := flag.Int("port_end", 6010, "end of port range")
 	addrs := flag.String("addrs", "localhost:27017", "comma separated list of mongo addresses")
@@ -36,15 +40,18 @@ func Main() error {
 	flag.Parse()
 
 	replicaSet := dvara.ReplicaSet{
-		Addrs:               *addrs,
-		PortStart:           *portStart,
-		PortEnd:             *portEnd,
-		MessageTimeout:      *messageTimeout,
-		ClientIdleTimeout:   *clientIdleTimeout,
-		GetLastErrorTimeout: *getLastErrorTimeout,
-		MaxConnections:      *maxConnections,
-		CertFile:            *certFile,
-		KeyFile:             *keyFile,
+		Addrs:                   *addrs,
+		PortStart:               *portStart,
+		PortEnd:                 *portEnd,
+		MessageTimeout:          *messageTimeout,
+		ClientIdleTimeout:       *clientIdleTimeout,
+		ServerIdleTimeout:       *serverIdleTimeout,
+		ServerClosePoolSize:     *serverClosePoolSize,
+		GetLastErrorTimeout:     *getLastErrorTimeout,
+		MaxConnections:          *maxConnections,
+		MaxPerClientConnections: *maxPerClientConnections,
+		CertFile:                *certFile,
+		KeyFile:                 *keyFile,
 	}
 
 	var log stdLogger
@@ -52,6 +59,7 @@ func Main() error {
 	err := graph.Provide(
 		&inject.Object{Value: &log},
 		&inject.Object{Value: &replicaSet},
+		&inject.Object{Value: &stats.HookClient{}},
 	)
 	if err != nil {
 		return err
