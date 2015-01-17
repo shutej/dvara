@@ -30,8 +30,10 @@ type Proxy struct {
 	Log            Logger
 	ReplicaSet     *ReplicaSet
 	ClientListener net.Listener // Listener for incoming client connections
-	ProxyAddr      string       // Address for incoming client connections
-	MongoAddr      string       // Address for destination Mongo server
+	Username       string
+	Password       string
+	ProxyAddr      string // Address for incoming client connections
+	MongoAddr      string // Address for destination Mongo server
 
 	wg                      sync.WaitGroup
 	closed                  chan struct{}
@@ -112,7 +114,7 @@ func (p *Proxy) stop(hard bool) error {
 
 func (p *Proxy) checkRSChanged() bool {
 	addrs := p.ReplicaSet.lastState.Addrs()
-	r, err := p.ReplicaSet.ReplicaSetStateCreator.FromAddrs(addrs)
+	r, err := p.ReplicaSet.ReplicaSetStateCreator.FromAddrs(p.Username, p.Password, addrs)
 	if err != nil {
 		p.Log.Errorf("all nodes possibly down?: %s", err)
 		return true

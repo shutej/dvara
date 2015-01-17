@@ -23,35 +23,38 @@ func main() {
 }
 
 func Main() error {
-	messageTimeout := flag.Duration("message_timeout", 2*time.Minute, "timeout for one message to be proxied")
+	addrs := flag.String("addrs", "localhost:27017", "comma separated list of mongo addresses")
+	certFile := flag.String("cert_file", "", "path to the certificate file")
 	clientIdleTimeout := flag.Duration("client_idle_timeout", 60*time.Minute, "idle timeout for client connections")
 	getLastErrorTimeout := flag.Duration("get_last_error_timeout", time.Minute, "timeout for getLastError pinning")
+	keyFile := flag.String("key_file", "", "path to the key file")
 	maxConnections := flag.Uint("max_connections", 100, "maximum number of connections per mongo")
 	maxPerClientConnections := flag.Uint("max_per_client_connections", 1, "maximum number of connections from a single client")
+	messageTimeout := flag.Duration("message_timeout", 2*time.Minute, "timeout for one message to be proxied")
+	password := flag.String("password", "", "")
+	portEnd := flag.Int("port_end", 6010, "end of port range")
+	portStart := flag.Int("port_start", 6000, "start of port range")
 	serverClosePoolSize := flag.Uint("server_close_pool_size", 1, "number of goroutines that will handle closing server connections.")
 	serverIdleTimeout := flag.Duration("server_idle_timeout", 60*time.Minute, "duration after which a server connection will be considered idle")
-	portStart := flag.Int("port_start", 6000, "start of port range")
-	portEnd := flag.Int("port_end", 6010, "end of port range")
-	addrs := flag.String("addrs", "localhost:27017", "comma separated list of mongo addresses")
-
-	certFile := flag.String("cert_file", "", "path to the certificate file")
-	keyFile := flag.String("key_file", "", "path to the key file")
+	username := flag.String("username", "", "")
 
 	flag.Parse()
 
 	replicaSet := dvara.ReplicaSet{
 		Addrs:                   *addrs,
-		PortStart:               *portStart,
-		PortEnd:                 *portEnd,
-		MessageTimeout:          *messageTimeout,
+		CertFile:                *certFile,
 		ClientIdleTimeout:       *clientIdleTimeout,
-		ServerIdleTimeout:       *serverIdleTimeout,
-		ServerClosePoolSize:     *serverClosePoolSize,
 		GetLastErrorTimeout:     *getLastErrorTimeout,
+		KeyFile:                 *keyFile,
 		MaxConnections:          *maxConnections,
 		MaxPerClientConnections: *maxPerClientConnections,
-		CertFile:                *certFile,
-		KeyFile:                 *keyFile,
+		MessageTimeout:          *messageTimeout,
+		Password:                *password,
+		PortEnd:                 *portEnd,
+		PortStart:               *portStart,
+		ServerClosePoolSize:     *serverClosePoolSize,
+		ServerIdleTimeout:       *serverIdleTimeout,
+		Username:                *username,
 	}
 
 	var log stdLogger
