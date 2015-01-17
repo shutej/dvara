@@ -1,0 +1,89 @@
+{
+	"ImportPath": "github.com/shutej/dvara",
+	"GoVersion": "go1.4",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/davecgh/go-spew/spew",
+			"Rev": "83f84dc933714d51504ceed59f43ead21d096fe7"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/clock",
+			"Rev": "41df9c4b742349146d28ac5d8caa45161209f3fc"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/ensure",
+			"Rev": "5d4168fb937c5e898f44d002a04c40da694a6c14"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/flag.addrs",
+			"Rev": "bc2b3899b43906412d493d97bce6a5dadf77e5ba"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/freeport",
+			"Rev": "44a978642d985920546ad1342bc95255ab259a42"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/ganglia/gmetric",
+			"Rev": "65c334ca89cfc1172d9b18272e7bc94720211759"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/gangliamr",
+			"Rev": "943cf0964a9a591dfa4f15bfef76f73ed46e5c7e"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/inject",
+			"Rev": "507e9fce727a03923f32aa45b9f732aac9934c24"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/metrics",
+			"Rev": "2d1ecf9e7b24ab0aae1240545968c4fa709e415e"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/mgotest",
+			"Rev": "b57b3ec96c189fa21e0001f7560fdc8fac134fc5"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/rpool",
+			"Rev": "3e5ae8c35897977a782324649df09d6c2ca0a855"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/stack",
+			"Rev": "6c824be2ba589917fb264589f99aab11b98fea5f"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/stackerr",
+			"Rev": "2b3dd9a9859e213410d0e6e3b26c5f693c5f2964"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/startstop",
+			"Rev": "88b0e30f484c4afe1ca8a9e46729df8e67b90506"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/stats",
+			"Rev": "a8126df93b2406675168d2930b6d3db46ffb805c"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/structtag",
+			"Rev": "f6ee7189073e07ee64831a52e02e2b6e9bb91adf"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/subset",
+			"Rev": "7306dc4f3e403eabb0b1bbd4b5499a3f1d3a1e2e"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/testname",
+			"Rev": "2a4bbfaea1bd4902896079bd29e5839bcc6a08f9"
+		},
+		{
+			"ImportPath": "github.com/facebookgo/waitout",
+			"Rev": "564ea535d4fda0188502516ec5d620e31739e1b3"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Rev": "445c05a1261a0941bc48d898c8eb3ee18ab398c3"
+		}
+	]
+}
