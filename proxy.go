@@ -320,14 +320,14 @@ func (p *Proxy) clientServeLoop(c net.Conn) {
 				}
 				// We need to return our server to the pool (it's still good as far
 				// as we know).
-				p.serverPool.Release(serverConn)
+				p.serverPool.Discard(serverConn)
 				return
 			}
 
 			// Successfully read message when waiting for the getLastError call.
 			mpt = stats.BumpTime(p.stats, "message.proxy.time")
 		}
-		p.serverPool.Release(serverConn)
+		p.serverPool.Discard(serverConn)
 		scht.End()
 		stats.BumpSum(p.stats, "message.proxy.success", 1)
 	}
